@@ -97,7 +97,7 @@ export class FuncoesFormUsuario extends React.Component {
     this.setState({ senha: value });
   }
 
-  setCep(evento) {
+  async setCep(evento) {
     const value = evento?.target?.value;
 
     if (!value || value.length < 8 || value.length > 8) {
@@ -107,7 +107,33 @@ export class FuncoesFormUsuario extends React.Component {
     }
 
     this.setState({ cep: value });
-    this.usaCep();
+    try {
+      await axios
+        //.get(`https://viacep.com.br/ws/${this.cep}/json/`)
+        //.get(`https://viacep.com.br/ws/01311200/json/`)
+        .get("https://viacep.com.br/ws/" + value + "/json/")
+        .then((response) => (this.data = response.data));
+      console.log("a");
+      console.log(this.data);
+      console.log(this.data.logradouro);
+      this.setState({ endereco: this.data.logradouro });
+      this.setState({ numero: this.data.complemento });
+      return;
+    } catch (e) {
+      console.log(e);
+    }
+    /*await axios
+      .get(`https://viacep.com.br/ws/${this.cep}/json/`)
+      .then((response) => {
+        this.data = response.data;
+        this.setState({ endereco: this.data.logradouro });
+        this.setState({ numero: this.data.complemento });
+        console.log(this.data.logradouro);
+        console.log(this.data.complemento);
+      })
+      .catch((error) => console.log(error));*/
+
+    //this.usaCep();
   }
 
   /*setCep(evento) {
@@ -118,15 +144,27 @@ export class FuncoesFormUsuario extends React.Component {
     };
   }*/
 
-  usaCep() {
-    const getGiHubUserWithAxios = async () => {
+  /*async usaCep(evento, cep) {
+    const value = evento?.target?.value;
+    console.log(cep);
+    try {
+      await axios
+        //.get(`https://viacep.com.br/ws/${this.cep}/json/`)
+        //.get(`https://viacep.com.br/ws/01311200/json/`)
+        .get("https://viacep.com.br/ws/" + cep + "/json/")
+        .then((response) => (this.data = response.data));
       console.log("a");
-      const response = await axios.get("viacep.com.br/ws/01311200/json/");
-      console.log("a");
-      //setUserData(response.data);
-      console.log(response.data);
-    };
-  }
+      console.log(this.data);
+      console.log(this.data.logradouro);
+      this.setState({ endereco: this.data.logradouro });
+      this.setState({ numero: this.data.complemento });
+      return;
+    } catch (e) {
+      console.log(e);
+    }
+
+    //.catch((error) => console.log(error));
+  }*/
 
   render() {
     const {
@@ -169,7 +207,7 @@ export class FuncoesFormUsuario extends React.Component {
           cep={cep}
           isCepValido={isCepValido}
           setCep={this.setCep.bind(this)}
-          usaCep={this.usaCep(cep)}
+          //usaCep={this.usaCep(this)}
           endereco={endereco}
           numero={numero}
         />
