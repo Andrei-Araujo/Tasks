@@ -29,9 +29,14 @@ export const FormularioUsuario = (props) => {
     cep,
     isCepValido,
     setCep,
-    usaCep,
+
     endereco,
     numero,
+    isEnderecoValido,
+    isNumeroValido,
+    setEndereco,
+    setNumero,
+    isFormValido,
   } = props;
 
   return (
@@ -44,7 +49,7 @@ export const FormularioUsuario = (props) => {
           } row `}
         >
           <label htmlFor="nomeUsuario" className="col-sm-3 col-form-label">
-            Nome Completo:
+            Nome Completo*:
           </label>
           <div className="col-sm-6">
             <input
@@ -56,16 +61,30 @@ export const FormularioUsuario = (props) => {
             />
           </div>
         </div>
+        <div className={`form-group  row `}>
+          <label htmlFor="cpfUsuario" className="col-sm-3 col-form-label">
+            CPF:
+          </label>
+          <div className="col-sm-6">
+            <input
+              type="string"
+              className={`form-control`}
+              id="cpfUsuario"
+              placeholder="123.456.789-01"
+              //value={nomeUsuario}
+              //onChange={setNomeUsuario}
+            />
+          </div>
+        </div>
         <div
           className={`form-group ${!isDataNascValido ? "errorInput" : ""} row `}
         >
           <label htmlFor="nascimento" className="col-sm-3 col-form-label">
-            Data de nascimento:
+            Data de nascimento*:
           </label>
           <div className="col-sm-6">
             <input
               type="date"
-              name="birthdate"
               value={dataNasc}
               onChange={setDataNasc}
               id="dataNasc"
@@ -76,7 +95,7 @@ export const FormularioUsuario = (props) => {
           className={`form-group ${!isEmailValido ? "errorInput" : ""} row `}
         >
           <label htmlFor="email" className="col-sm-3 col-form-label">
-            Email:
+            Email*:
           </label>
           <div className="col-sm-6">
             <input
@@ -92,7 +111,7 @@ export const FormularioUsuario = (props) => {
           className={`form-group ${!isSenhaValido ? "errorInput" : ""} row `}
         >
           <label htmlFor="senha" className="col-sm-3 col-form-label">
-            Senha:
+            Senha*:
           </label>
           <div className="col-sm-6">
             <input
@@ -104,11 +123,11 @@ export const FormularioUsuario = (props) => {
             />
           </div>
         </div>
-        <div className={`form-group ${!isCepValido ? "errorInput" : ""} row `}>
+        <div className={`form-group ${!isCepValido ? "" : ""} row `}>
           <label htmlFor="cep" className="col-sm-3  col-form-label">
             CEP:
           </label>
-          <div className="col-sm-4 mb-3">
+          <div className="col-sm-6 mb-3">
             <input
               type="number"
               className={`form-control`}
@@ -118,11 +137,8 @@ export const FormularioUsuario = (props) => {
               id="cep"
             />
           </div>
-          <button className="btn btn-primary ml-3 mb-3" onClick={usaCep}>
-            Procurar endereço
-          </button>
         </div>
-        <div className={`form-group  row `}>
+        <div className={`form-group ${!isEnderecoValido ? "" : ""} row `}>
           <label htmlFor="logradouro" className="col-sm-3 col-form-label">
             Endereço:
           </label>
@@ -131,11 +147,12 @@ export const FormularioUsuario = (props) => {
               type="string"
               className={`form-control`}
               value={endereco}
+              onChange={setEndereco}
               id="endereco"
             />
           </div>
         </div>
-        <div className={`form-group  row `}>
+        <div className={`form-group ${!isNumeroValido ? "" : ""} row `}>
           <label htmlFor="numeroEndereco" className="col-sm-3 col-form-label">
             Número:
           </label>
@@ -144,12 +161,18 @@ export const FormularioUsuario = (props) => {
               type="string"
               className={`form-control`}
               value={numero}
+              onChange={setNumero}
               id="numero"
             />
           </div>
         </div>
         <div className="form-group row">
-          <button className="btn btn-primary ml-3 mb-3">Adicionar</button>
+          <button
+            className="btn btn-primary ml-3 mb-3"
+            disabled={!isFormValido}
+          >
+            Adicionar
+          </button>
           <button className="btn btn-secondary ml-3 mb-3" type="button">
             Limpar
           </button>

@@ -3,7 +3,7 @@ import React from "react";
 import { FormularioUsuario } from "./Formulario";
 
 const URL = "http://localhost:3201/api/usuario/";
-const URLcep = "viacep.com.br/ws/";
+const URLcep = "https://viacep.com.br/ws/";
 
 export class FuncoesFormUsuario extends React.Component {
   initialState = {
@@ -42,6 +42,19 @@ export class FuncoesFormUsuario extends React.Component {
     }
 
     this.setState({ nomeUsuario: value });
+  }
+
+  setCpf(evento) {
+    const value = evento?.target?.value;
+    console.log(value);
+    if (!value || value.length < 3) {
+      console.log(value);
+      this.setState({ isCpfValido: false });
+    } else {
+      this.setState({ isCpfValido: true });
+    }
+
+    this.setState({ cpf: value });
   }
 
   setDataNasc(evento) {
@@ -109,62 +122,64 @@ export class FuncoesFormUsuario extends React.Component {
     this.setState({ cep: value });
     try {
       await axios
-        //.get(`https://viacep.com.br/ws/${this.cep}/json/`)
-        //.get(`https://viacep.com.br/ws/01311200/json/`)
-        .get("https://viacep.com.br/ws/" + value + "/json/")
+        .get(URLcep + value + "/json/")
         .then((response) => (this.data = response.data));
-      console.log("a");
-      console.log(this.data);
-      console.log(this.data.logradouro);
       this.setState({ endereco: this.data.logradouro });
+      if (!this.data.logradouro) {
+        this.setState({ isEnderecoValido: false });
+      } else {
+        this.setState({ isEnderecoValido: true });
+      }
       this.setState({ numero: this.data.complemento });
+      if (!this.data.complemento) {
+        this.setState({ isNumeroValido: false });
+      } else {
+        this.setState({ isNumeroValido: true });
+      }
       return;
     } catch (e) {
       console.log(e);
     }
-    /*await axios
-      .get(`https://viacep.com.br/ws/${this.cep}/json/`)
-      .then((response) => {
-        this.data = response.data;
-        this.setState({ endereco: this.data.logradouro });
-        this.setState({ numero: this.data.complemento });
-        console.log(this.data.logradouro);
-        console.log(this.data.complemento);
-      })
-      .catch((error) => console.log(error));*/
-
-    //this.usaCep();
   }
 
-  /*setCep(evento) {
-    const getGiHubUserWithAxios = async () => {
-      const response = await axios.get("viacep.com.br/ws/01311200/json/");
-      //setUserData(response.data);
-      console.log(response.data);
-    };
-  }*/
-
-  /*async usaCep(evento, cep) {
+  setEndereco(evento) {
     const value = evento?.target?.value;
-    console.log(cep);
-    try {
-      await axios
-        //.get(`https://viacep.com.br/ws/${this.cep}/json/`)
-        //.get(`https://viacep.com.br/ws/01311200/json/`)
-        .get("https://viacep.com.br/ws/" + cep + "/json/")
-        .then((response) => (this.data = response.data));
-      console.log("a");
-      console.log(this.data);
-      console.log(this.data.logradouro);
-      this.setState({ endereco: this.data.logradouro });
-      this.setState({ numero: this.data.complemento });
-      return;
-    } catch (e) {
-      console.log(e);
+
+    if (!value || value.length < 3) {
+      console.log(value);
+      this.setState({ isEnderecoValido: false });
+    } else {
+      this.setState({ isEnderecoValido: true });
     }
 
-    //.catch((error) => console.log(error));
-  }*/
+    this.setState({ endereco: value });
+  }
+
+  setNumero(evento) {
+    const value = evento?.target?.value;
+
+    if (!value) {
+      console.log(value);
+      this.setState({ isNumeroValido: false });
+    } else {
+      this.setState({ isNumeroValido: true });
+    }
+
+    this.setState({ numero: value });
+  }
+
+  isFormValido() {
+    const {
+      isNomeUsuarioValido,
+      isDataNascValido,
+      isEmailValido,
+      isSenhaValido,
+    } = this.state;
+
+    return (
+      isNomeUsuarioValido && isDataNascValido && isEmailValido && isSenhaValido
+    );
+  }
 
   render() {
     const {
@@ -207,9 +222,13 @@ export class FuncoesFormUsuario extends React.Component {
           cep={cep}
           isCepValido={isCepValido}
           setCep={this.setCep.bind(this)}
-          //usaCep={this.usaCep(this)}
           endereco={endereco}
           numero={numero}
+          isEnderecoValido={isEnderecoValido}
+          isNumeroValido={isNumeroValido}
+          setEndereco={this.setEndereco.bind(this)}
+          setNumero={this.setNumero.bind(this)}
+          isFormValido={this.isFormValido()}
         />
       </div>
     );
