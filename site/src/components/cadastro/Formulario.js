@@ -37,6 +37,10 @@ export const FormularioUsuario = (props) => {
     setEndereco,
     setNumero,
     isFormValido,
+    cpf,
+    isCpfValido,
+    setCpf,
+    salvar,
   } = props;
 
   return (
@@ -61,16 +65,18 @@ export const FormularioUsuario = (props) => {
             />
           </div>
         </div>
-        <div className={`form-group  row `}>
+        <div className={`form-group ${!isCpfValido ? "errorInput" : ""} row `}>
           <label htmlFor="cpfUsuario" className="col-sm-3 col-form-label">
             CPF:
           </label>
           <div className="col-sm-6">
             <input
-              type="string"
+              type="number"
               className={`form-control`}
               id="cpfUsuario"
-              placeholder="123.456.789-01"
+              placeholder="12345678901"
+              value={cpf}
+              onChange={setCpf}
               //value={nomeUsuario}
               //onChange={setNomeUsuario}
             />
@@ -170,6 +176,7 @@ export const FormularioUsuario = (props) => {
           <button
             className="btn btn-primary ml-3 mb-3"
             disabled={!isFormValido}
+            onClick={salvar}
           >
             Adicionar
           </button>

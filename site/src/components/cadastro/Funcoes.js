@@ -1,5 +1,7 @@
 import axios from "axios";
+import { cpf } from "cpf-cnpj-validator";
 import React from "react";
+import swal from "sweetalert";
 import { FormularioUsuario } from "./Formulario";
 
 const URL = "http://localhost:3201/api/usuario/";
@@ -9,9 +11,9 @@ export class FuncoesFormUsuario extends React.Component {
   initialState = {
     cpf: "",
     isCpfValido: false,
-    cep: "",
+    cep: null,
     isCepValido: false,
-    endereco: "",
+    endereco: null,
     isEnderecoValido: false,
     numero: null,
     isNumeroValido: false,
@@ -47,11 +49,11 @@ export class FuncoesFormUsuario extends React.Component {
   setCpf(evento) {
     const value = evento?.target?.value;
     console.log(value);
-    if (!value || value.length < 3) {
-      console.log(value);
-      this.setState({ isCpfValido: false });
+    if (value && cpf.isValid(value)) {
+      console.log(cpf.isValid(value));
+      this.setState({ isCpfValido: true }); //ordem invertida
     } else {
-      this.setState({ isCpfValido: true });
+      this.setState({ isCpfValido: false });
     }
 
     this.setState({ cpf: value });
@@ -181,6 +183,65 @@ export class FuncoesFormUsuario extends React.Component {
     );
   }
 
+  async salvar(evento) {
+    try {
+      if (evento) {
+        evento.preventDefault();
+      }
+
+      if (!this.isFormValido) {
+        swal("Ops!", "favor preencher todos os campos obrigatórios", "error");
+        return;
+      }
+
+      const {
+        cpf,
+
+        cep,
+
+        endereco,
+
+        numero,
+
+        _idUsuario,
+        dataNasc,
+
+        nomeUsuario,
+
+        email,
+
+        senha,
+      } = this.state;
+
+      const body = {
+        cpf,
+
+        cep,
+
+        endereco,
+
+        numero,
+
+        data: dataNasc,
+
+        nome: nomeUsuario,
+
+        email,
+
+        senha,
+      };
+      console.log(body);
+      await axios.post(URL, body);
+    } catch (e) {
+      console.log(e);
+      swal(
+        "Erro!",
+        "Não foi possível salvar cadastro, tente novamente mais tarde!",
+        "error"
+      );
+    }
+  }
+
   render() {
     const {
       nomeUsuario,
@@ -229,6 +290,10 @@ export class FuncoesFormUsuario extends React.Component {
           setEndereco={this.setEndereco.bind(this)}
           setNumero={this.setNumero.bind(this)}
           isFormValido={this.isFormValido()}
+          cpf={cpf}
+          isCpfValido={isCpfValido}
+          setCpf={this.setCpf.bind(this)}
+          salvar={this.salvar.bind(this)}
         />
       </div>
     );
