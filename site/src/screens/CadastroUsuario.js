@@ -1,6 +1,6 @@
 import React from "react";
 import { Cabecalho } from "../components/Cabecalho";
-import { FormularioUsuario } from "../components/cadastro/Formulario";
+import { FuncoesFormUsuario } from "../components/cadastro/Funcoes";
 
 export class CadastroScreen extends React.Component {
   render() {
@@ -10,7 +10,7 @@ export class CadastroScreen extends React.Component {
           titulo="Cadastro de Usuário"
           subtitulo="Campos marcados com * são obrigatórios"
         />
-        <FormularioUsuario />
+        <FuncoesFormUsuario />
       </div>
     );
   }

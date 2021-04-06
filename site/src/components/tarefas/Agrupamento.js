@@ -45,6 +45,7 @@ export class AgrupamentoTarefas extends React.Component {
 
   setNomeTarefa(evento) {
     const value = evento?.target?.value;
+    console.log(value);
     if (!value || value.length < 3) {
       this.setState({ isNomeTarefaValido: false });
     } else {
