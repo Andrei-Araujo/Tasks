@@ -10,5 +10,3 @@ server.use(cors);
 
 server.listen(port, () => console.log(`Servidor no ar na porta ${port}`));
 module.exports = server;
-
-console.log("server ok");

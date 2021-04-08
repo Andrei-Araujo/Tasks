@@ -1,44 +1,39 @@
 import React from "react";
-//import { connect } from "react-redux";
-//import { bindActionCreators } from "redux";
-/*import {
-  limparFormularioCurso,
-  salvarCurso,
-  setCursoCargaHoraria,
-  setCursoCategoria,
-  setCursoCodigo,
-  setCursoDescricao,
-  setCursoPreco,
-} from "../../actions/cursos";
-*/
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import {
+  limparFormularioTarefas,
+  salvarTarefa,
+  setDataFim,
+  setDataInicio,
+  setNomeTarefa,
+} from "../../actions/tarefa";
 
-export const FormularioTarefas = (props) => {
+const FormularioTarefas = (props) => {
   const {
     nomeTarefa,
     dataInicio,
     dataFim,
-    idUsuario,
+    idUsuario, // a receber, apos requisicao especifica ao servidor
     setNomeTarefa,
     setDataInicio,
     setDataFim,
     isNomeTarefaValido,
     isDataInicioValido,
     isDataFimValido,
-    isFormTarefaValido,
-    isAtualizacao,
-    salvar,
-    limpar,
+    salvarTarefa,
+    limparFormularioTarefas,
+    _id,
   } = props;
 
   return (
-    <div className="border-right pl-3 pr-3">
+    <div className="border-right pl-3 pr-3 pt-4">
       <h3 className="border-bottom">Cadastro de Tarefas</h3>
       <form>
-        {/*<div className={`form-group ${!isCodigoValido ? "errorInput" : ""} row `}>*/}
         <div
           className={`form-group ${
             !isNomeTarefaValido ? "errorInput" : ""
-          } row `}
+          } row pt-4`}
         >
           <label htmlFor="nomeTarefa" className="col-sm-3 col-form-label">
             *Nome:
@@ -56,10 +51,10 @@ export const FormularioTarefas = (props) => {
         <div
           className={`form-group ${
             !isDataInicioValido ? "errorInput" : ""
-          } row `}
+          } row pt-2 `}
         >
           <label htmlFor="dataInicio" className="col-sm-3 col-form-label">
-            *Data de início:
+            *Início:
           </label>
           <div className="col-sm-6">
             <input
@@ -77,7 +72,7 @@ export const FormularioTarefas = (props) => {
           } row `}
         >
           <label htmlFor="dataFim" className="col-sm-3 col-form-label">
-            Data de conclusão:
+            Conclusão:
           </label>
           <div className="col-sm-6">
             <input
@@ -93,15 +88,35 @@ export const FormularioTarefas = (props) => {
         <div className="form-group row">
           <button
             className="btn btn-primary ml-3 mb-3"
-            disabled={!isFormTarefaValido}
-            onClick={salvar}
+            disabled={
+              !(
+                isNomeTarefaValido &&
+                isDataInicioValido &&
+                isDataFimValido &&
+                (dataInicio < dataFim || dataFim === "") &&
+                nomeTarefa &&
+                dataInicio
+              )
+            }
+            onClick={(e) =>
+              salvarTarefa(e, {
+                isNomeTarefaValido,
+                nomeTarefa,
+                isDataInicioValido,
+                dataInicio,
+                isDataFimValido,
+                dataFim,
+                idUsuario,
+                _id,
+              })
+            }
           >
-            {isAtualizacao ? "Atualizar" : "Adicionar"}
+            {_id ? "Atualizar" : "Adicionar"}
           </button>
           <button
             className="btn btn-secondary ml-3 mb-3"
             type="button"
-            onClick={limpar}
+            onClick={limparFormularioTarefas}
           >
             Limpar
           </button>
@@ -110,3 +125,30 @@ export const FormularioTarefas = (props) => {
     </div>
   );
 };
+
+const mapStoreToProps = (store) => ({
+  isNomeTarefaValido: store.tarefas.isNomeTarefaValido,
+  nomeTarefa: store.tarefas.nomeTarefa,
+  isDataInicioValido: store.tarefas.isDataInicioValido,
+  dataInicio: store.tarefas.dataInicio,
+  isDataFimValido: store.tarefas.isDataFimValido,
+  dataFim: store.tarefas.dataFim,
+  idUsuario: store.usuarios._idUsuario, // temporario, para armazenar idUsuario a ser inscrito conforme se registrem tarefas
+  _id: store.tarefas._id,
+});
+
+const mapActionToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      setNomeTarefa,
+      setDataInicio,
+      setDataFim,
+      salvarTarefa,
+      limparFormularioTarefas,
+    },
+    dispatch
+  );
+
+const conectado = connect(mapStoreToProps, mapActionToProps)(FormularioTarefas);
+
+export { conectado as FormularioTarefas };

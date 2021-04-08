@@ -1,11 +1,11 @@
 import React from "react";
-import { Cabecalho } from "../components/Cabecalho";
+import { FormularioUsuario } from "../components/cadastro/Formulario";
 
 export class HomeScreen extends React.Component {
   render() {
     return (
-      <div className="container">
-        <Cabecalho titulo="Home" subtitulo="Seja bem vindo" />
+      <div className="container homeScreen">
+        <FormularioUsuario isPublic={true} />
       </div>
     );
   }

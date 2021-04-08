@@ -1,10 +1,27 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import {
+  excluirTarefa,
+  getTarefas,
+  selecionarTarefa,
+} from "../../actions/tarefa";
 
-export const ListagemTarefas = (props) => {
-  const { excluir, selecionar } = props;
+const ListagemTarefas = (props) => {
+  const {
+    listaTarefas,
+    getTarefas,
+    excluirTarefa,
+    selecionarTarefa,
+    _idUsuario,
+  } = props;
+
+  useEffect(() => {
+    getTarefas();
+  }, [getTarefas]);
 
   const exibirLinhas = () => {
-    const tarefas = props.tarefas || [];
+    const tarefas = listaTarefas || [];
     return tarefas.map((tarefa) => (
       <tr key={tarefa._id}>
         <td>{tarefa.nomeTarefa}</td>
@@ -17,13 +34,13 @@ export const ListagemTarefas = (props) => {
         <td>
           <button
             className="btn btn-success ml-2"
-            onClick={(e) => selecionar(tarefa._id)}
+            onClick={(_) => selecionarTarefa(tarefa)}
           >
             <i className="fa fa-check"></i>
           </button>
           <button
             className="btn btn-danger ml-2"
-            onClick={(e) => excluir(tarefa._id)}
+            onClick={(_) => excluirTarefa(tarefa._id)}
           >
             <i className="fa fa-trash-o"></i>
           </button>
@@ -33,8 +50,8 @@ export const ListagemTarefas = (props) => {
   };
 
   return (
-    <div className="border-right pl-2 pr-2">
-      <h3 className="border-bottom">Lista de Tarefas</h3>
+    <div className="border-right pl-2 pr-2 pt-3">
+      <h3 className="b">Lista de Tarefas</h3>
       <table className="table table-striped">
         <thead>
           <tr>
@@ -45,7 +62,27 @@ export const ListagemTarefas = (props) => {
           </tr>
         </thead>
         <tbody>{exibirLinhas()}</tbody>
+        <div>{console.log(_idUsuario)}</div>
       </table>
     </div>
   );
 };
+
+const mapStoreToProps = (store) => ({
+  listaTarefas: store.tarefas.lista,
+  _idUsuario: store.usuarios._idUsuario,
+});
+
+const mapActionToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      excluirTarefa,
+      selecionarTarefa,
+      getTarefas,
+    },
+    dispatch
+  );
+
+const conectado = connect(mapStoreToProps, mapActionToProps)(ListagemTarefas);
+
+export { conectado as ListagemTarefas };
