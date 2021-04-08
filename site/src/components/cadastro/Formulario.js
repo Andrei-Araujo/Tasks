@@ -52,8 +52,8 @@ const FormularioUsuario = (props) => {
         <div className=" pt-5 pb-5 ">
           <h1>Esqueça como é se esquecer</h1>
           <p className="col-sm-5 pt-4 pb-3 ">
-            O gerenciador de tarefas é uma podersa ferramenta para incrementar a
-            produtivdade, sem perder o foco naquilo que importa.
+            O gerenciador de tarefas é uma poderosa ferramenta para incrementar
+            a produtivdade, sem perder o foco naquilo que importa.
           </p>
           <div className={`form-group  row `}>
             <div className="col-sm-6">
